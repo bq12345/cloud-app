@@ -10,23 +10,25 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.bq.adapter.LeftAdapter;
-import org.bq.fragement.FirstFragment;
-import org.bq.fragement.SecondFragment;
+import org.bq.contact.ContactItem;
+import org.bq.fragement.CallFragment;
+import org.bq.fragement.ContactFragment;
+import org.bq.fragement.SmsFragment;
 
 import java.util.Arrays;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements ContactFragment.OnItemSelectedListener {
     private ListView lv;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -118,6 +120,12 @@ public class MainActivity extends FragmentActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override
+    public void onItemSelected(ContactItem item) {
+        Log.v("MainActivity", item.toString());
+
+    }
+
     private class DrawerItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -127,10 +135,13 @@ public class MainActivity extends FragmentActivity {
             //根据item点击行号判断启用哪个Fragment
             switch (position) {
                 case 0:
-                    fragment = new FirstFragment();
+                    fragment = new ContactFragment();
                     break;
                 case 1:
-                    fragment = new SecondFragment();
+                    fragment = new SmsFragment();
+                    break;
+                case 2:
+                    fragment = new CallFragment();
                     break;
                 default:
                     break;

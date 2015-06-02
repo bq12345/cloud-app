@@ -21,5 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile group: 'com.belerweb', name: 'pinyin4j', version: '2.5.0'
     compile 'com.android.support:appcompat-v7:22.1.1'
 }

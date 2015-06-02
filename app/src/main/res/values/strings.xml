@@ -12,4 +12,7 @@
     <string name="drawer_close">关闭</string>
 
     <string name="action_title">云服务</string>
+    <string name="searchTxt">查找</string>
+    <string name="demo_short">00000</string>
+    <string name="demo_long">0000000</string>
 </resources>

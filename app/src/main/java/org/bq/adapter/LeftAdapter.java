@@ -17,10 +17,8 @@ import java.util.List;
 public class LeftAdapter extends BaseAdapter {
     private List<String> items;
     private LayoutInflater inflater;
-    private Context context;
 
     public LeftAdapter(Context context, List<String> items) {
-        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.items = items;
     }
