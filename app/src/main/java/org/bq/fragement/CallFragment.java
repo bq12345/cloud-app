@@ -7,7 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
@@ -20,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -81,65 +86,63 @@ public class CallFragment extends Fragment {
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            setChildView(view, cursor);
+            setChildView(view, cursor, context);
 
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             View view = mInflater.inflate(R.layout.call_item, null);
-            setChildView(view, cursor);
+            setChildView(view, cursor, context);
             return view;
         }
 
 
-        public void setChildView(View view, Cursor cursor) {
+        public void setChildView(View view, Cursor cursor, Context context) {
 
-            TextView callTypeImg = (TextView) view.findViewById(R.id.calltype);
-            TextView nameTxt = (TextView) view.findViewById(R.id.name);
-            TextView numberTxt = (TextView) view.findViewById(R.id.number);
-            TextView epochTxt = (TextView) view.findViewById(R.id.epoch);
-            TextView durationTxt = (TextView) view.findViewById(R.id.duration);
+            ImageView callTypeImg = (ImageView) view.findViewById(R.id.calltype);
+            TextView numberTxt = (TextView) view.findViewById(R.id.callNumber);
+            TextView timeTxt = (TextView) view.findViewById(R.id.callTime);
+            TextView durationTxt = (TextView) view.findViewById(R.id.callDuration);
 
-            String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
-            if (name == null || name.trim().length() == 0) {
-                name = "(未知号码)";
-            }
-
+            //String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
             String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
-            //  Integer epoch = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DATE));
             Integer duration = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DURATION));
             Integer callType = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE));
-
-
             Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.DATE))));
             String time = sfd.format(date);
 
-
-            nameTxt.setText(name);
-            numberTxt.setText(number/*+":"+time*/);
+            numberTxt.setText(number);
             durationTxt.setText(duration + "秒");
-            epochTxt.setText("" + time);
+            timeTxt.setText("" + time);
             int color = 0;
-
+            Bitmap bitmap = null;
             switch (callType) {
                 case CallLog.Calls.INCOMING_TYPE: {
-                    color = Color.BLUE;
+                    color = Color.rgb(60, 157, 64);
+                    bitmap = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.call_received);
                     break;
                 }
                 case CallLog.Calls.OUTGOING_TYPE: {
-                    color = Color.GREEN;
+                    color = Color.rgb(50, 165, 231);
+                    bitmap = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.call_made);
                     break;
                 }
                 case CallLog.Calls.MISSED_TYPE: {
-                    color = Color.RED;
+                    color = Color.rgb(238, 27, 46);
+                    bitmap = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.call_missed);
                     break;
                 }
             }
             if (callType > 0 && callType < 4) {
-                callTypeImg.setText(CALL_TYPE_NAME[callType - 1]);
-                callTypeImg.setBackgroundColor(CALL_TYPE_BGCOLOR[callType - 1]);
-                callTypeImg.setTextColor(CALL_TYPE_FGCOLOR[callType - 1]);
+                Bitmap bmp = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bmp);
+                canvas.drawColor(color);
+                canvas.drawBitmap(bitmap, 0, 0, null);
+                callTypeImg.setImageBitmap(bmp);
             }
 
         }

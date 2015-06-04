@@ -1,7 +1,6 @@
 package org.bq.fragement;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -46,8 +45,6 @@ public class SmsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Conversation c = (Conversation) listView.getItemAtPosition(position);
                 Toast.makeText(getActivity(), "Conversation --" + c.getId(), Toast.LENGTH_SHORT).show();
-                //intent.putExtra("cid", c.getId());
-                //startActivity(intent);
             }
         });
         return smsLayout;
