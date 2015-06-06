@@ -5,12 +5,14 @@
         <item>信息</item>
         <item>通话记录</item>
         <item>同步</item>
+        <item>设备信息</item>
         <item>关于</item>
     </string-array>
     <string name="app_name">云服务</string>
     <string name="drawer_open">开启</string>
     <string name="drawer_close">关闭</string>
-
+    <string name="async">同步</string>
+    <string name="update">刷新</string>
     <string name="action_title">云服务</string>
     <string name="searchTxt">查找</string>
     <string name="demo_short">00000</string>

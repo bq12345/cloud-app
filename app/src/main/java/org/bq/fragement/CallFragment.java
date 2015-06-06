@@ -38,8 +38,10 @@ import org.bq.yun.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by bq on 2015/1/4.
@@ -53,15 +55,14 @@ public class CallFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RelativeLayout contactView = (RelativeLayout) inflater.inflate(R.layout.call, null);
+        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.call, null);
         Cursor cursor = getActivity().getContentResolver().query(CallLog.Calls.CONTENT_URI,
                 null, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
-        lv = (ListView) contactView.findViewById(R.id.call_list);
-        lv.setFastScrollEnabled(true);
+        lv = (ListView) view.findViewById(R.id.call_list);
         CallLogCursorAdapter adapter = new CallLogCursorAdapter(getActivity(), cursor);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new CallItemClickListener());
-        return contactView;
+        return view;
 
     }
 
@@ -74,7 +75,6 @@ public class CallFragment extends Fragment {
 
 
     private class CallLogCursorAdapter extends CursorAdapter {
-        private final SimpleDateFormat sfd = new SimpleDateFormat("MM-dd hh:mm:ss");
         private LayoutInflater mInflater;
 
 
@@ -98,9 +98,24 @@ public class CallFragment extends Fragment {
         }
 
 
+        private String filterDuration(Integer duration) {
+            String str = "";
+            int hour = ~~(duration / 3600);
+            int minute = ~~((duration - hour * 3600) / 60);
+            int second = duration - hour * 3600 - minute * 60;
+            if (hour > 0) {
+                str += hour + "小时";
+            }
+            if (minute > 0) {
+                str += minute + "分";
+            }
+            str += second + "秒";
+            return str;
+        }
+
         public void setChildView(View view, Cursor cursor, Context context) {
 
-            ImageView callTypeImg = (ImageView) view.findViewById(R.id.calltype);
+            ImageView callTypeImg = (ImageView) view.findViewById(R.id.callType);
             TextView numberTxt = (TextView) view.findViewById(R.id.callNumber);
             TextView timeTxt = (TextView) view.findViewById(R.id.callTime);
             TextView durationTxt = (TextView) view.findViewById(R.id.callDuration);
@@ -109,12 +124,26 @@ public class CallFragment extends Fragment {
             String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
             Integer duration = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DURATION));
             Integer callType = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE));
-            Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.DATE))));
-            String time = sfd.format(date);
+            Calendar date = Calendar.getInstance();
+            date.setTimeInMillis(cursor.getLong(cursor.getColumnIndexOrThrow(CallLog.Calls.DATE)));
+            Calendar curDate = Calendar.getInstance();
+            curDate.setTimeInMillis(System.currentTimeMillis());
+            SimpleDateFormat dateFormat = null;
+            if (date.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+                if (date.get(Calendar.DAY_OF_YEAR) == curDate.get(Calendar.DAY_OF_YEAR)) {
+                    dateFormat = new SimpleDateFormat("h时mm分", Locale.CHINA);
+                } else {
+                    dateFormat = new SimpleDateFormat("M月d日", Locale.CHINA);
+                }
+            } else {
+                dateFormat = new SimpleDateFormat("yyyy年M月d日h时mm分", Locale.CHINA);
+            }
+            String time = dateFormat.format(date.getTime());
 
             numberTxt.setText(number);
-            durationTxt.setText(duration + "秒");
-            timeTxt.setText("" + time);
+
+            durationTxt.setText(filterDuration(duration));
+            timeTxt.setText(time);
             int color = 0;
             Bitmap bitmap = null;
             switch (callType) {
@@ -138,13 +167,14 @@ public class CallFragment extends Fragment {
                 }
             }
             if (callType > 0 && callType < 4) {
-                Bitmap bmp = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
+                Bitmap bmp = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bmp);
                 canvas.drawColor(color);
                 canvas.drawBitmap(bitmap, 0, 0, null);
                 callTypeImg.setImageBitmap(bmp);
             }
-
         }
+
+
     }
 }

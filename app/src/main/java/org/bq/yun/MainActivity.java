@@ -21,8 +21,10 @@ import android.widget.Toast;
 
 import org.bq.adapter.LeftAdapter;
 import org.bq.contact.ContactItem;
+import org.bq.fragement.AsyncFragment;
 import org.bq.fragement.CallFragment;
 import org.bq.fragement.ContactFragment;
+import org.bq.fragement.DeviceFragment;
 import org.bq.fragement.SmsFragment;
 
 import java.util.Arrays;
@@ -142,6 +144,12 @@ public class MainActivity extends FragmentActivity implements ContactFragment.On
                     break;
                 case 2:
                     fragment = new CallFragment();
+                    break;
+                case 3:
+                    fragment = new AsyncFragment();
+                    break;
+                case 4:
+                    fragment = new DeviceFragment();
                     break;
                 default:
                     break;

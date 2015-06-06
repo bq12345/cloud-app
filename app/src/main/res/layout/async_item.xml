@@ -11,8 +11,8 @@
         android:padding="8dip"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/callType"
+        <CheckBox
+            android:id="@+id/async_check"
             android:layout_width="25dip"
             android:layout_height="25dip"
             android:layout_alignParentLeft="true"
@@ -25,34 +25,14 @@
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/callNumber"
+            android:id="@+id/async_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/callType"
+            android:layout_toRightOf="@id/async_check"
+            android:padding="8dip"
             android:text="18740414439"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="16sp"/>
 
-
-        <TextView
-            android:id="@+id/callTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/callNumber"
-            android:layout_marginTop="1dp"
-            android:layout_toRightOf="@id/callType"
-            android:text="21:47"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/callDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="5dip"
-            android:text="120s"
-            android:textSize="12sp" />
     </RelativeLayout>
 
 </LinearLayout>
